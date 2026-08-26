@@ -17,6 +17,11 @@ ipokabu.net (https://ipokabu.net/yotei/) のIPOスケジュール一覧をスク
 にアクセスし、以下の詳細項目を追加で取得する:
   上場日, 社名, 証券コード, 評価, 予想利益, 業種, 仮条件確定日, ブックビルディング期間,
   購入期間, 公募株数, 売出株数, O.A分, 吸収金額, オファリングレシオ, 当選口数, 仮条件
+
+-o で指定した出力ファイルが既に存在する場合、証券コードをキーに前回データとマージする:
+  ・既存銘柄は行の位置を保ったまま最新の内容に上書きする(評価が「未定」→「A」等の更新に対応)
+  ・サイトから消えた銘柄(掲載終了)はデータから削除せずそのまま残す
+  ・新規銘柄はデータの末尾に追加する
 """
 
 import argparse
@@ -290,6 +295,36 @@ def save_json(records: list[dict], path: str) -> None:
         json.dump(records, f, ensure_ascii=False, indent=2)
 
 
+def load_existing(path: Path) -> list[dict]:
+    """前回出力したファイルを読み込む。存在しない場合は空リストを返す。"""
+    if not path.exists():
+        return []
+    if path.suffix.lower() == ".json":
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    with open(path, encoding="utf-8-sig", newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def merge_records(existing: list[dict], new_records: list[dict], key_field: str) -> list[dict]:
+    """既存データに新しい取得結果をマージする。
+    ・キー(証券コード)が既存にあれば、その行の位置はそのままで内容だけ最新の内容に更新する。
+    ・キーが既存になければ、新規行として末尾に追加する。
+    ・サイト上から消えた銘柄(新しい取得結果に含まれない)は、既存データにそのまま残す。"""
+    merged = list(existing)
+    index = {r.get(key_field): i for i, r in enumerate(merged) if r.get(key_field)}
+    for rec in new_records:
+        key = rec.get(key_field)
+        if not key:
+            continue
+        if key in index:
+            merged[index[key]] = rec
+        else:
+            merged.append(rec)
+            index[key] = len(merged) - 1
+    return merged
+
+
 def main():
     parser = argparse.ArgumentParser(description="ipokabu.net のIPOスケジュールをスクレイピング")
     parser.add_argument(
@@ -318,12 +353,18 @@ def main():
     if args.detail:
         records = enrich_with_details(records, delay=args.delay)
 
+    # 新規に取得した銘柄同士は上場日の古い順に並べる(既存データとのマージ時、末尾への追加順に反映される)
     records.sort(key=date_sort_key)
 
     if args.output:
         out_path = Path(args.output)
         if not out_path.is_absolute():
             out_path = OUTPUT_DIR / out_path
+
+        key_field = "証券コード" if args.detail else "code"
+        existing = load_existing(out_path)
+        records = merge_records(existing, records, key_field)
+
         if out_path.suffix.lower() == ".json":
             save_json(records, str(out_path))
         else:
