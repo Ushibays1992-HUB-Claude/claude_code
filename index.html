@@ -344,6 +344,18 @@ let rows = [];
 let sortKey = "上場日";
 let sortAsc = true;
 
+// WEB表示のみを簡略化する(元データ・CSV/JSONは変更しない)
+function formatDisplay(col, val) {
+  if (!val) return val;
+  if (col === "吸収金額") {
+    return val.replace(/あたり/g, "");
+  }
+  if (col === "仮条件") {
+    return val.replace(/(.+?)に決定（想定価格は(.+?)）/, "$1（$2）");
+  }
+  return val;
+}
+
 function parseDate(s) {
   if (!s) return [9999, 99, 99];
   const m = s.match(/(?:(\d{4})\/)?(\d{1,2})\/(\d{1,2})/);
@@ -456,7 +468,7 @@ function render() {
       } else if (WRAP_WIDTHS[col]) {
         const div = document.createElement("div");
         div.className = "wrap-cell";
-        div.textContent = val;
+        div.textContent = formatDisplay(col, val);
         td.appendChild(div);
       } else {
         td.textContent = val;
