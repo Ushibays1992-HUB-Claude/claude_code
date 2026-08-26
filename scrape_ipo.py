@@ -19,7 +19,6 @@ ipokabu.net (https://ipokabu.net/yotei/) のIPOスケジュール一覧をスク
   購入期間, 公募株数, 売出株数, O.A分, 吸収金額, オファリングレシオ, 当選口数, 仮条件
 """
 
-# VSCode Git機能テスト用のコメント
 import argparse
 import csv
 import json
