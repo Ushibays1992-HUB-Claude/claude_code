@@ -92,13 +92,14 @@
     text-align: left;
     white-space: nowrap;
   }
-  /* テスト: 「ブックビルディング期間」列だけ折り返し表示 */
+  /* 「ブックビルディング期間」列だけ折り返し表示(横幅を詰めるため単語の途中でも改行) */
   .wrap-cell {
     display: block;
-    width: 180px;
+    width: 100px;
     white-space: normal;
   }
   .wrap-head {
+    width: 100px;
     white-space: normal;
     line-height: 1.4;
   }
@@ -199,7 +200,7 @@ function renderHead() {
     const arrow = sortKey === col ? (sortAsc ? " ▲" : " ▼") : "";
     if (col === "ブックビルディング期間") {
       th.classList.add("wrap-head");
-      th.innerHTML = "ブックビルディング<br>期間" + arrow;
+      th.innerHTML = "ブックビル<br>ディング期間" + arrow;
     } else {
       th.textContent = col + arrow;
     }
