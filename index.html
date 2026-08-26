@@ -92,24 +92,12 @@
     text-align: left;
     white-space: nowrap;
   }
-  /* 幅の広くなりがちな列を折り返し表示(単語の途中でも改行) */
+  /* 幅の広くなりがちな列を折り返し表示(単語の途中でも改行、幅は列ごとにJSからインライン指定) */
   .wrap-cell {
     display: block;
-    width: 100px;
     white-space: normal;
   }
   .wrap-head {
-    width: 100px;
-    white-space: normal;
-    line-height: 1.4;
-  }
-  .wrap-cell-60 {
-    display: block;
-    width: 60px;
-    white-space: normal;
-  }
-  .wrap-head-60 {
-    width: 60px;
     white-space: normal;
     line-height: 1.4;
   }
@@ -190,13 +178,21 @@ const COLUMNS = [
   "大和コネクト証券", "東海東京証券", "SBIネオトレード証券",
 ];
 const FLAG_COLUMNS = new Set(COLUMNS.slice(17));
-// 見出し・データともに幅100pxで折り返し表示する列
-const WRAP_COLUMNS = new Set(["ブックビルディング期間", "購入期間"]);
-// 見出し・データともに幅60pxで折り返し表示する列
-const WRAP_COLUMNS_60 = new Set([
-  "予想利益", "仮条件確定日", "公募株数", "売出株数",
-  "O.A分", "吸収金額", "オファリングレシオ", "当選口数",
-]);
+// 見出し・データともに指定した幅(px)で折り返し表示する列
+const WRAP_WIDTHS = {
+  "ブックビルディング期間": 100,
+  "購入期間": 100,
+  "予想利益": 60,
+  "仮条件確定日": 60,
+  "公募株数": 60,
+  "売出株数": 60,
+  "O.A分": 60,
+  "吸収金額": 60,
+  "オファリングレシオ": 60,
+  "当選口数": 60,
+  "仮条件": 120,
+  "主幹事証券": 80,
+};
 
 let rows = [];
 let sortKey = "上場日";
@@ -215,10 +211,9 @@ function renderHead() {
   COLUMNS.forEach(col => {
     const th = document.createElement("th");
     const arrow = sortKey === col ? (sortAsc ? " ▲" : " ▼") : "";
-    if (WRAP_COLUMNS.has(col)) {
+    if (WRAP_WIDTHS[col]) {
       th.classList.add("wrap-head");
-    } else if (WRAP_COLUMNS_60.has(col)) {
-      th.classList.add("wrap-head-60");
+      th.style.width = WRAP_WIDTHS[col] + "px";
     }
     th.textContent = col + arrow;
     th.addEventListener("click", () => {
@@ -280,14 +275,10 @@ function render() {
       } else if (FLAG_COLUMNS.has(col)) {
         td.classList.add("flag");
         td.textContent = val === "1" ? "●" : "";
-      } else if (WRAP_COLUMNS.has(col)) {
+      } else if (WRAP_WIDTHS[col]) {
         const div = document.createElement("div");
         div.className = "wrap-cell";
-        div.textContent = val;
-        td.appendChild(div);
-      } else if (WRAP_COLUMNS_60.has(col)) {
-        const div = document.createElement("div");
-        div.className = "wrap-cell-60";
+        div.style.width = WRAP_WIDTHS[col] + "px";
         div.textContent = val;
         td.appendChild(div);
       } else {
