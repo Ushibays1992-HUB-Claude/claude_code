@@ -121,16 +121,20 @@
     position: sticky;
     overflow: hidden;
     text-overflow: ellipsis;
+    will-change: transform;
   }
   th.sticky-col {
     z-index: 3;
+    box-shadow: 1px 0 0 0 var(--header-bg);
   }
   td.sticky-col {
     z-index: 2;
     background: var(--bg);
+    box-shadow: 1px 0 0 0 var(--bg);
   }
   tbody tr:nth-child(even) td.sticky-col {
     background: var(--row-alt);
+    box-shadow: 1px 0 0 0 var(--row-alt);
   }
   .rank {
     display: inline-block;
