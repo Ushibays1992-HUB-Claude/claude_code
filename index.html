@@ -200,10 +200,8 @@ function renderHead() {
     const arrow = sortKey === col ? (sortAsc ? " ▲" : " ▼") : "";
     if (col === "ブックビルディング期間") {
       th.classList.add("wrap-head");
-      th.innerHTML = "ブックビル<br>ディング期間" + arrow;
-    } else {
-      th.textContent = col + arrow;
     }
+    th.textContent = col + arrow;
     th.addEventListener("click", () => {
       if (sortKey === col) { sortAsc = !sortAsc; } else { sortKey = col; sortAsc = true; }
       render();
