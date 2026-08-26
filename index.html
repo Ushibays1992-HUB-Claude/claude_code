@@ -115,6 +115,22 @@
   tbody tr:nth-child(even) {
     background: var(--row-alt);
   }
+  /* 上場日/社名/証券コード/評価: 横スクロールしても左に固定表示する列 */
+  .sticky-col {
+    position: sticky;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  th.sticky-col {
+    z-index: 3;
+  }
+  td.sticky-col {
+    z-index: 2;
+    background: var(--bg);
+  }
+  tbody tr:nth-child(even) td.sticky-col {
+    background: var(--row-alt);
+  }
   .rank {
     display: inline-block;
     padding: 2px 8px;
@@ -194,6 +210,18 @@ const WRAP_WIDTHS = {
   "主幹事証券": 80,
 };
 
+// 横スクロールしても左に固定表示する列(幅と左端からの位置をここで管理)
+const STICKY_WIDTHS = { "上場日": 110, "社名": 180, "証券コード": 80, "評価": 60 };
+const STICKY_COLUMNS = Object.keys(STICKY_WIDTHS);
+const STICKY_LEFT = {};
+(() => {
+  let acc = 0;
+  STICKY_COLUMNS.forEach(col => {
+    STICKY_LEFT[col] = acc;
+    acc += STICKY_WIDTHS[col];
+  });
+})();
+
 let rows = [];
 let sortKey = "上場日";
 let sortAsc = true;
@@ -214,6 +242,11 @@ function renderHead() {
     if (WRAP_WIDTHS[col]) {
       th.classList.add("wrap-head");
       th.style.width = WRAP_WIDTHS[col] + "px";
+    }
+    if (STICKY_WIDTHS[col]) {
+      th.classList.add("sticky-col");
+      th.style.width = STICKY_WIDTHS[col] + "px";
+      th.style.left = STICKY_LEFT[col] + "px";
     }
     th.textContent = col + arrow;
     th.addEventListener("click", () => {
@@ -263,10 +296,16 @@ function render() {
     COLUMNS.forEach(col => {
       const td = document.createElement("td");
       const val = r[col] || "";
+      if (STICKY_WIDTHS[col]) {
+        td.classList.add("sticky-col");
+        td.style.width = STICKY_WIDTHS[col] + "px";
+        td.style.left = STICKY_LEFT[col] + "px";
+      }
       if (col === "評価") {
         td.innerHTML = `<span class="rank ${rankClass(val)}">${val || "未定"}</span>`;
       } else if (col === "社名") {
         const code = r["証券コード"];
+        td.title = val;
         if (code) {
           td.innerHTML = `<a class="company-link" href="https://ipokabu.net/ipo/${encodeURIComponent(code)}" target="_blank" rel="noopener">${val}</a>`;
         } else {
