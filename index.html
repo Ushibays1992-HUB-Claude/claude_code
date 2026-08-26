@@ -13,6 +13,7 @@
     --header-bg: #f3f4f6;
     --row-alt: #fafafa;
     --col-alt: #f6fbf6;
+    --col-alt-gray: #f0f0f0;
     --accent: #2563eb;
     --chip-a: #dcfce7; --chip-a-fg: #166534;
     --chip-b: #fef9c3; --chip-b-fg: #854d0e;
@@ -29,6 +30,7 @@
       --header-bg: #171a21;
       --row-alt: #14171d;
       --col-alt: #12241a;
+      --col-alt-gray: #1a1d24;
       --accent: #60a5fa;
       --chip-a: #14532d; --chip-a-fg: #bbf7d0;
       --chip-b: #713f12; --chip-b-fg: #fef08a;
@@ -176,6 +178,13 @@
     color: var(--accent);
     font-weight: 700;
     padding: 4px !important;
+  }
+  /* 証券会社列(SBI証券〜SBIネオトレード証券)は白/薄灰色の縞にする */
+  td.flag:nth-child(odd) {
+    background: var(--bg);
+  }
+  td.flag:nth-child(even) {
+    background: var(--col-alt-gray);
   }
   .status-btn {
     width: 100%;
