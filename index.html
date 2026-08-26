@@ -168,14 +168,19 @@
     font-weight: 700;
     padding: 4px !important;
   }
-  .status-select {
+  .status-btn {
     width: 100%;
     font-size: 0.68rem;
-    padding: 3px 1px;
+    padding: 4px 2px;
     border: 1px solid var(--border);
     border-radius: 4px;
     color: var(--fg);
     background-color: var(--bg);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .status-btn:hover {
+    border-color: var(--accent);
   }
   .empty {
     padding: 40px 20px;
@@ -234,7 +239,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
 // 申込ステータス管理: 証券コード×証券会社 ごとにFirestoreへ保存し、複数PCで共有する
-const STATUS_OPTIONS = ["申込前", "申込中", "補欠申込中", "落選", "当選"];
+const STATUS_OPTIONS = ["申込前", "申込中", "落選", "補欠申込中", "当選"];
 const STATUS_COLORS = {
   "申込前": "",
   "申込中": "#dbeafe",
@@ -418,22 +423,20 @@ function render() {
           const code = r["証券コード"];
           const key = statusKey(code, col);
           const current = statusMap[key] || "申込前";
-          const sel = document.createElement("select");
-          sel.className = "status-select";
-          sel.style.background = STATUS_COLORS[current] || "";
-          STATUS_OPTIONS.forEach(opt => {
-            const o = document.createElement("option");
-            o.value = opt;
-            o.textContent = opt;
-            if (opt === current) o.selected = true;
-            sel.appendChild(o);
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "status-btn";
+          btn.textContent = current;
+          btn.style.background = STATUS_COLORS[current] || "";
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const idx = STATUS_OPTIONS.indexOf(btn.textContent);
+            const next = STATUS_OPTIONS[(idx + 1) % STATUS_OPTIONS.length];
+            btn.textContent = next;
+            btn.style.background = STATUS_COLORS[next] || "";
+            setStatus(code, col, next);
           });
-          sel.addEventListener("click", (e) => e.stopPropagation());
-          sel.addEventListener("change", (e) => {
-            setStatus(code, col, e.target.value);
-            sel.style.background = STATUS_COLORS[e.target.value] || "";
-          });
-          td.appendChild(sel);
+          td.appendChild(btn);
         }
       } else if (WRAP_WIDTHS[col]) {
         const div = document.createElement("div");
