@@ -15,7 +15,8 @@
     --col-alt: #f6fbf6;
     --col-alt-gray: #f0f0f0;
     --accent: #2563eb;
-    --chip-a: #fee2e2; --chip-a-fg: #b91c1c;
+    --chip-s: #fee2e2; --chip-s-fg: #b91c1c;
+    --chip-a: #fce7f3; --chip-a-fg: #9d174d;
     --chip-b: #fef9c3; --chip-b-fg: #854d0e;
     --chip-c: #ffedd5; --chip-c-fg: #9a3412;
     --chip-d: #dbeafe; --chip-d-fg: #1e3a8a;
@@ -32,7 +33,8 @@
       --col-alt: #12241a;
       --col-alt-gray: #1a1d24;
       --accent: #60a5fa;
-      --chip-a: #7f1d1d; --chip-a-fg: #fecaca;
+      --chip-s: #7f1d1d; --chip-s-fg: #fecaca;
+      --chip-a: #831843; --chip-a-fg: #fbcfe8;
       --chip-b: #713f12; --chip-b-fg: #fef08a;
       --chip-c: #7c2d12; --chip-c-fg: #fed7aa;
       --chip-d: #1e3a8a; --chip-d-fg: #bfdbfe;
@@ -168,6 +170,7 @@
     font-weight: 600;
     font-size: 0.8rem;
   }
+  .rank-S { background: var(--chip-s); color: var(--chip-s-fg); font-weight: 800; }
   .rank-A { background: var(--chip-a); color: var(--chip-a-fg); font-weight: 800; }
   .rank-B { background: var(--chip-b); color: var(--chip-b-fg); }
   .rank-C { background: var(--chip-c); color: var(--chip-c-fg); }
@@ -221,6 +224,7 @@
     <input type="search" id="search" placeholder="社名・証券コードで検索">
     <select id="rankFilter">
       <option value="">評価: すべて</option>
+      <option value="S">評価: S</option>
       <option value="A">評価: A</option>
       <option value="B">評価: B</option>
       <option value="C">評価: C</option>
@@ -408,6 +412,7 @@ function renderHead() {
 
 function rankClass(v) {
   if (!v) return "";
+  if (v.startsWith("S")) return "rank-S";
   if (v.startsWith("A")) return "rank-A";
   if (v.startsWith("B")) return "rank-B";
   if (v.startsWith("C")) return "rank-C";
@@ -451,6 +456,7 @@ function render() {
         td.style.left = STICKY_LEFT[col] + "px";
       }
       if (col === "評価") {
+        td.style.textAlign = "center";
         td.innerHTML = `<span class="rank ${rankClass(val)}">${val || "未定"}</span>`;
       } else if (col === "社名") {
         const code = r["証券コード"];
