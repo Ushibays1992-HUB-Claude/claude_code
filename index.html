@@ -12,6 +12,7 @@
     --border: #e5e7eb;
     --header-bg: #f3f4f6;
     --row-alt: #fafafa;
+    --col-alt: #eef7ee;
     --accent: #2563eb;
     --chip-a: #dcfce7; --chip-a-fg: #166534;
     --chip-b: #fef9c3; --chip-b-fg: #854d0e;
@@ -27,6 +28,7 @@
       --border: #2a2e37;
       --header-bg: #171a21;
       --row-alt: #14171d;
+      --col-alt: #12241a;
       --accent: #60a5fa;
       --chip-a: #14532d; --chip-a-fg: #bbf7d0;
       --chip-b: #713f12; --chip-b-fg: #fef08a;
@@ -127,8 +129,12 @@
   thead th:hover {
     color: var(--accent);
   }
-  tbody tr:nth-child(even) {
-    background: var(--row-alt);
+  /* 列ごとに白と薄緑を交互に(列の境目を分かりやすくする) */
+  tbody td:nth-child(odd) {
+    background: var(--bg);
+  }
+  tbody td:nth-child(even) {
+    background: var(--col-alt);
   }
   /* 上場日/社名/証券コード/評価: 横スクロールしても左に固定表示する列 */
   .sticky-col {
@@ -143,12 +149,12 @@
   }
   td.sticky-col {
     z-index: 2;
-    background: var(--bg);
+  }
+  td.sticky-col:nth-child(odd) {
     box-shadow: 1px 0 0 0 var(--bg);
   }
-  tbody tr:nth-child(even) td.sticky-col {
-    background: var(--row-alt);
-    box-shadow: 1px 0 0 0 var(--row-alt);
+  td.sticky-col:nth-child(even) {
+    box-shadow: 1px 0 0 0 var(--col-alt);
   }
   .rank {
     display: inline-block;
@@ -239,11 +245,11 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
 // 申込ステータス管理: 証券コード×証券会社 ごとにFirestoreへ保存し、複数PCで共有する
-const STATUS_OPTIONS = ["申込前", "申込中", "落選", "補欠申込中", "当選"];
+const STATUS_OPTIONS = ["申込前", "申込中", "落選", "補欠", "当選"];
 const STATUS_COLORS = {
   "申込前": "",
   "申込中": "#dbeafe",
-  "補欠申込中": "#fef3c7",
+  "補欠": "#fef3c7",
   "落選": "#e5e7eb",
   "当選": "#bbf7d0",
 };
