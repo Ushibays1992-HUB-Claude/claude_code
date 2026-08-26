@@ -92,6 +92,12 @@
     text-align: left;
     white-space: nowrap;
   }
+  /* テスト: 「ブックビルディング期間」列(8番目)だけ折り返し表示 */
+  th:nth-child(8), td:nth-child(8) {
+    white-space: normal;
+    word-break: break-word;
+    max-width: 140px;
+  }
   thead th {
     position: sticky;
     top: 0;
