@@ -98,6 +98,10 @@
     width: 180px;
     white-space: normal;
   }
+  .wrap-head {
+    white-space: normal;
+    line-height: 1.4;
+  }
   thead th {
     position: sticky;
     top: 0;
@@ -192,7 +196,13 @@ function renderHead() {
   tr.innerHTML = "";
   COLUMNS.forEach(col => {
     const th = document.createElement("th");
-    th.textContent = col + (sortKey === col ? (sortAsc ? " ▲" : " ▼") : "");
+    const arrow = sortKey === col ? (sortAsc ? " ▲" : " ▼") : "";
+    if (col === "ブックビルディング期間") {
+      th.classList.add("wrap-head");
+      th.innerHTML = "ブックビルディング<br>期間" + arrow;
+    } else {
+      th.textContent = col + arrow;
+    }
     th.addEventListener("click", () => {
       if (sortKey === col) { sortAsc = !sortAsc; } else { sortKey = col; sortAsc = true; }
       render();
