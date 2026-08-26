@@ -203,6 +203,22 @@ const COLUMNS = [
   "大和コネクト証券", "東海東京証券", "SBIネオトレード証券",
 ];
 const FLAG_COLUMNS = new Set(COLUMNS.slice(17));
+// 証券会社名の見出し表示用の短縮ラベル(データのキー名はCOLUMNSのフル名称のまま)
+const HEADER_LABELS = {
+  "SBI証券": "SBI",
+  "野村證券": "野村",
+  "SMBC日興証券": "SMBC日興",
+  "みずほ証券": "みずほ",
+  "大和証券": "大和",
+  "マネックス証券": "マネックス",
+  "三菱UFJモルガン・スタンレー証券": "三菱UFJMS",
+  "岡三オンライン": "岡三オンライン",
+  "楽天証券": "楽天",
+  "松井証券": "松井",
+  "大和コネクト証券": "大和コネクト",
+  "東海東京証券": "東海東京",
+  "SBIネオトレード証券": "SBIネオ",
+};
 // 見出し・データともに指定した幅(px)で折り返し表示する列
 const WRAP_WIDTHS = {
   "業種": 100,
@@ -260,7 +276,8 @@ function renderHead() {
       th.style.width = STICKY_WIDTHS[col] + "px";
       th.style.left = STICKY_LEFT[col] + "px";
     }
-    th.textContent = col + arrow;
+    th.textContent = (HEADER_LABELS[col] || col) + arrow;
+    th.title = col;
     th.addEventListener("click", () => {
       if (sortKey === col) { sortAsc = !sortAsc; } else { sortKey = col; sortAsc = true; }
       render();
