@@ -1,0 +1,38 @@
+name: Scrape IPO schedule
+
+on:
+  schedule:
+    # 毎日 21:00 JST (= 12:00 UTC) に実行
+    - cron: "0 12 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scraper
+        run: |
+          python scrape_ipo.py --detail -o ipo.csv
+          python scrape_ipo.py --detail -o ipo.json
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ipo.csv ipo.json
+          git diff --cached --quiet || git commit -m "Update IPO schedule data"
+          git push
