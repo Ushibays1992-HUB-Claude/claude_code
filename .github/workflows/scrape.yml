@@ -2,8 +2,8 @@ name: Scrape IPO schedule
 
 on:
   schedule:
-    # 毎日 21:00 JST (= 12:00 UTC) に実行
-    - cron: "0 12 * * *"
+    # 毎週月曜 9:00 JST (= 前日日曜 0:00 UTC) に実行
+    - cron: "0 0 * * 1"
   workflow_dispatch: {}
 
 permissions:
