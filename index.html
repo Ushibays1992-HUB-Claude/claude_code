@@ -248,10 +248,17 @@ const db = getFirestore(firebaseApp);
 const STATUS_OPTIONS = ["申込前", "申込中", "落選", "補欠", "当選"];
 const STATUS_COLORS = {
   "申込前": "",
-  "申込中": "#dbeafe",
-  "補欠": "#fef3c7",
-  "落選": "#e5e7eb",
-  "当選": "#bbf7d0",
+  "申込中": "#3b82f6",
+  "落選": "#ef4444",
+  "補欠": "#22c55e",
+  "当選": "#d4af37",
+};
+const STATUS_TEXT_COLORS = {
+  "申込前": "",
+  "申込中": "#ffffff",
+  "落選": "#ffffff",
+  "補欠": "#ffffff",
+  "当選": "#3a2e00",
 };
 const statusMap = {};
 
@@ -309,7 +316,7 @@ const WRAP_WIDTHS = {
   "業種": 100,
   "ブックビルディング期間": 100,
   "購入期間": 100,
-  "予想利益": 60,
+  "予想利益": 90,
   "仮条件確定日": 90,
   "公募株数": 120,
   "売出株数": 120,
@@ -434,12 +441,14 @@ function render() {
           btn.className = "status-btn";
           btn.textContent = current;
           btn.style.background = STATUS_COLORS[current] || "";
+          btn.style.color = STATUS_TEXT_COLORS[current] || "";
           btn.addEventListener("click", (e) => {
             e.stopPropagation();
             const idx = STATUS_OPTIONS.indexOf(btn.textContent);
             const next = STATUS_OPTIONS[(idx + 1) % STATUS_OPTIONS.length];
             btn.textContent = next;
             btn.style.background = STATUS_COLORS[next] || "";
+            btn.style.color = STATUS_TEXT_COLORS[next] || "";
             setStatus(code, col, next);
           });
           td.appendChild(btn);
