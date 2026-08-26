@@ -447,7 +447,6 @@ function render() {
       } else if (WRAP_WIDTHS[col]) {
         const div = document.createElement("div");
         div.className = "wrap-cell";
-        div.style.width = WRAP_WIDTHS[col] + "px";
         div.textContent = val;
         td.appendChild(div);
       } else {
