@@ -92,7 +92,7 @@
     text-align: left;
     white-space: nowrap;
   }
-  /* 幅の広くなりがちな列を折り返し表示(横幅100pxに固定、単語の途中でも改行) */
+  /* 幅の広くなりがちな列を折り返し表示(単語の途中でも改行) */
   .wrap-cell {
     display: block;
     width: 100px;
@@ -100,6 +100,16 @@
   }
   .wrap-head {
     width: 100px;
+    white-space: normal;
+    line-height: 1.4;
+  }
+  .wrap-cell-60 {
+    display: block;
+    width: 60px;
+    white-space: normal;
+  }
+  .wrap-head-60 {
+    width: 60px;
     white-space: normal;
     line-height: 1.4;
   }
@@ -181,9 +191,11 @@ const COLUMNS = [
 ];
 const FLAG_COLUMNS = new Set(COLUMNS.slice(17));
 // 見出し・データともに幅100pxで折り返し表示する列
-const WRAP_COLUMNS = new Set([
-  "予想利益", "仮条件確定日", "ブックビルディング期間", "購入期間",
-  "公募株数", "売出株数", "O.A分", "吸収金額", "オファリングレシオ", "当選口数",
+const WRAP_COLUMNS = new Set(["ブックビルディング期間", "購入期間"]);
+// 見出し・データともに幅60pxで折り返し表示する列
+const WRAP_COLUMNS_60 = new Set([
+  "予想利益", "仮条件確定日", "公募株数", "売出株数",
+  "O.A分", "吸収金額", "オファリングレシオ", "当選口数",
 ]);
 
 let rows = [];
@@ -205,6 +217,8 @@ function renderHead() {
     const arrow = sortKey === col ? (sortAsc ? " ▲" : " ▼") : "";
     if (WRAP_COLUMNS.has(col)) {
       th.classList.add("wrap-head");
+    } else if (WRAP_COLUMNS_60.has(col)) {
+      th.classList.add("wrap-head-60");
     }
     th.textContent = col + arrow;
     th.addEventListener("click", () => {
@@ -269,6 +283,11 @@ function render() {
       } else if (WRAP_COLUMNS.has(col)) {
         const div = document.createElement("div");
         div.className = "wrap-cell";
+        div.textContent = val;
+        td.appendChild(div);
+      } else if (WRAP_COLUMNS_60.has(col)) {
+        const div = document.createElement("div");
+        div.className = "wrap-cell-60";
         div.textContent = val;
         td.appendChild(div);
       } else {
