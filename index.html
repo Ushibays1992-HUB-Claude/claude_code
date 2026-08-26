@@ -114,6 +114,9 @@
     display: block;
     white-space: normal;
   }
+  .wrap-cell.small-text {
+    font-size: 0.75em;
+  }
   .wrap-head {
     white-space: normal;
     line-height: 1.4;
@@ -323,7 +326,7 @@ const WRAP_WIDTHS = {
   "吸収金額": 120,
   "当選口数": 60,
   "仮条件": 140,
-  "主幹事証券": 80,
+  "主幹事証券": 90,
 };
 // table-layout:fixed では全列に幅指定が必要なため、証券会社フラグ列にも幅を設定する
 FLAG_COLUMNS.forEach(col => { WRAP_WIDTHS[col] = 60; });
@@ -474,6 +477,7 @@ function render() {
       } else if (WRAP_WIDTHS[col]) {
         const div = document.createElement("div");
         div.className = "wrap-cell";
+        if (col === "主幹事証券") div.classList.add("small-text");
         div.textContent = formatDisplay(col, val);
         td.appendChild(div);
       } else {
