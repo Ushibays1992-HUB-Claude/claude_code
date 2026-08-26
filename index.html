@@ -81,6 +81,7 @@
     padding: 0 20px 24px;
   }
   table {
+    table-layout: fixed;
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
@@ -202,6 +203,7 @@ const COLUMNS = [
 const FLAG_COLUMNS = new Set(COLUMNS.slice(17));
 // 見出し・データともに指定した幅(px)で折り返し表示する列
 const WRAP_WIDTHS = {
+  "業種": 100,
   "ブックビルディング期間": 100,
   "購入期間": 100,
   "予想利益": 60,
@@ -215,6 +217,8 @@ const WRAP_WIDTHS = {
   "仮条件": 80,
   "主幹事証券": 80,
 };
+// table-layout:fixed では全列に幅指定が必要なため、証券会社フラグ列にも幅を設定する
+FLAG_COLUMNS.forEach(col => { WRAP_WIDTHS[col] = 60; });
 
 // 横スクロールしても左に固定表示する列(幅と左端からの位置をここで管理)
 const STICKY_WIDTHS = { "上場日": 110, "社名": 180, "証券コード": 80, "評価": 60 };
