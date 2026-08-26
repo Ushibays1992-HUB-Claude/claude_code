@@ -49,7 +49,8 @@
   }
   header {
     display: flex;
-    align-items: baseline;
+    align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
     padding: 12px 20px;
     border-bottom: 1px solid var(--border);
@@ -66,8 +67,8 @@
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
-    padding: 12px 20px;
     align-items: center;
+    margin-left: auto;
   }
   .controls input, .controls select {
     padding: 6px 10px;
@@ -183,15 +184,19 @@
 <header>
   <h1>IPOスケジュール一覧</h1>
   <div class="sub" id="updated">読み込み中...</div>
+  <div class="controls">
+    <input type="search" id="search" placeholder="社名・証券コードで検索">
+    <select id="rankFilter">
+      <option value="">評価: すべて</option>
+      <option value="A">評価: A</option>
+      <option value="B">評価: B</option>
+      <option value="C">評価: C</option>
+      <option value="D">評価: D</option>
+      <option value="未定">評価: 未定</option>
+    </select>
+    <span id="count"></span>
+  </div>
 </header>
-
-<div class="controls">
-  <input type="search" id="search" placeholder="社名・証券コードで検索">
-  <select id="rankFilter">
-    <option value="">評価: すべて</option>
-  </select>
-  <span id="count"></span>
-</div>
 
 <div class="table-wrap">
   <table id="tbl">
@@ -370,25 +375,12 @@ function render() {
   document.getElementById("emptyMsg").style.display = filtered.length ? "none" : "block";
 }
 
-function populateRankFilter() {
-  const sel = document.getElementById("rankFilter");
-  const ranks = [...new Set(rows.map(r => r["評価"]).filter(Boolean))].sort();
-  ranks.forEach(r => {
-    const opt = document.createElement("option");
-    opt.value = r;
-    opt.textContent = "評価: " + r;
-    sel.appendChild(opt);
-  });
-}
-
 async function load() {
   try {
     const res = await fetch("ipo.json?_=" + Date.now());
     if (!res.ok) throw new Error(res.status);
     rows = await res.json();
-    document.getElementById("updated").textContent =
-      `${rows.length}件のIPO銘柄データ（このページを開いた時点でipo.jsonを読み込んでいます）`;
-    populateRankFilter();
+    document.getElementById("updated").textContent = `${rows.length}件のIPO銘柄データ`;
     render();
   } catch (e) {
     document.getElementById("updated").textContent = "ipo.json の読み込みに失敗しました: " + e;
