@@ -369,7 +369,7 @@ function formatDisplay(col, val) {
   if (col === "仮条件") {
     return val
       .replace(/(.+?)に決定（想定価格は(.+?)）/, "$1（$2）")
-      .replace(/抽選資金：/g, "");
+      .replace(/（抽選資金：.*?）/, "");
   }
   if (col === "公募株数" || col === "売出株数") {
     return val.replace(/株$/, "");
