@@ -231,6 +231,7 @@
 <header>
   <h1>IPOスケジュール一覧</h1>
   <div class="sub" id="updated">読み込み中...</div>
+  <div class="sub" id="scrapedAt"></div>
   <div class="controls">
     <input type="search" id="search" placeholder="社名・証券コードで検索">
     <select id="rankFilter">
@@ -551,6 +552,19 @@ function render() {
   document.getElementById("emptyMsg").style.display = filtered.length ? "none" : "block";
 }
 
+async function loadScrapedAt() {
+  try {
+    const res = await fetch("last_updated.json?_=" + Date.now());
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.scraped_at) {
+      document.getElementById("scrapedAt").textContent = `${data.scraped_at} scraped`;
+    }
+  } catch (e) {
+    // 取得できなくても本体表示には影響させない
+  }
+}
+
 async function load() {
   try {
     const res = await fetch("ipo.json?_=" + Date.now());
@@ -561,6 +575,7 @@ async function load() {
   } catch (e) {
     document.getElementById("updated").textContent = "ipo.json の読み込みに失敗しました: " + e;
   }
+  loadScrapedAt();
 }
 
 document.getElementById("search").addEventListener("input", render);

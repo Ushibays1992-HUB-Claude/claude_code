@@ -30,6 +30,7 @@ import json
 import re
 import sys
 import time
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
@@ -295,6 +296,16 @@ def save_json(records: list[dict], path: str) -> None:
         json.dump(records, f, ensure_ascii=False, indent=2)
 
 
+def save_last_updated() -> None:
+    """スクレイピングを実行した日時(JST)を記録する。WEBページ側で「最終更新」として表示する。"""
+    jst = timezone(timedelta(hours=9))
+    now = datetime.now(jst)
+    text = f"{now.year}/{now.month}/{now.day} {now.hour}:{now.minute:02d}"
+    path = OUTPUT_DIR / "last_updated.json"
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump({"scraped_at": text}, f, ensure_ascii=False)
+
+
 def load_existing(path: Path) -> list[dict]:
     """前回出力したファイルを読み込む。存在しない場合は空リストを返す。"""
     if not path.exists():
@@ -369,6 +380,7 @@ def main():
             save_json(records, str(out_path))
         else:
             save_csv(records, str(out_path))
+        save_last_updated()
         print(f"{len(records)}件のIPO情報を {out_path} に保存しました。")
     elif args.detail:
         for r in records:
