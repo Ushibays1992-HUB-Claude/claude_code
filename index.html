@@ -121,6 +121,17 @@
   .wrap-cell.small-text {
     font-size: 0.8em;
   }
+  .confirm-badge {
+    display: inline-block;
+    background: #dc2626;
+    color: #ffffff;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    border-radius: 4px;
+    padding: 2px 4px;
+    margin-right: 4px;
+  }
   .wrap-head {
     white-space: normal;
     line-height: 1.4;
@@ -491,6 +502,13 @@ function render() {
           });
           td.appendChild(btn);
         }
+      } else if (col === "仮条件") {
+        const div = document.createElement("div");
+        div.className = "wrap-cell";
+        const isDecided = /抽選資金/.test(val);
+        const badge = isDecided ? '<span class="confirm-badge">確</span>' : "";
+        div.innerHTML = badge + formatDisplay(col, val);
+        td.appendChild(div);
       } else if (WRAP_WIDTHS[col]) {
         const div = document.createElement("div");
         div.className = "wrap-cell";
