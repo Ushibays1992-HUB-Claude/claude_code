@@ -274,13 +274,14 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
 // 申込ステータス管理: 証券コード×証券会社 ごとにFirestoreへ保存し、複数PCで共有する
-const STATUS_OPTIONS = ["申込前", "申込中", "落選", "補欠", "当選"];
+const STATUS_OPTIONS = ["申込前", "申込中", "落選", "補欠", "当選", "予定"];
 const STATUS_COLORS = {
   "申込前": "",
   "申込中": "#3b82f6",
   "落選": "#ef4444",
   "補欠": "#22c55e",
   "当選": "#d4af37",
+  "予定": "#eab308",
 };
 const STATUS_TEXT_COLORS = {
   "申込前": "",
@@ -288,6 +289,7 @@ const STATUS_TEXT_COLORS = {
   "落選": "#ffffff",
   "補欠": "#ffffff",
   "当選": "#3a2e00",
+  "予定": "#3a2e00",
 };
 const statusMap = {};
 
